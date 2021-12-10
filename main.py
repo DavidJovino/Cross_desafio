@@ -152,7 +152,7 @@ while z == 0:
             if test == 'i':
                 z = 2
                 fhand = codecs.open('numbers.json', 'w')
-                fhand.write(" \"`{ \n")
+                fhand.write(" \"`{ ")
                 fhand.write(str(lista_ordenada))
                 fhand.write(" }`\" ")
                 fhand.close()
@@ -161,7 +161,7 @@ while z == 0:
                 for page in trange(count_page):
                     pagina = lista_ordenada[((page-1)*100):(100*count_page)]
                     fhand = codecs.open('numbers' + str(page)+ '.json', 'w')
-                    fhand.write(" \"`{ \n")
+                    fhand.write(" \"`{ ")
                     fhand.write(str(lista_ordenada))
                     fhand.write(" }`\" ")
                     fhand.close()
