@@ -124,59 +124,73 @@ lista_ordenada = binary_sort(lista)
 
 z = 0
 while z == 0:
-    test = input(Fore.BLUE + "Api ordenado, deseja enviar para o servidor? (y/n) ")
-    if test == 'y':
-        z = 1
-        host = input(str("Qual o endereço do servidor que irá hospedar? "))
-        path= '/api'
-        username= input(str("Username "))
-        password= input(str("Password "))
-        token= base64.encodestring('%s:%s' % (username, password)).strip()
+    try:
+        test_API = input(Fore.BLUE + "Api ordenado, deseja enviar para o servidor? (y/n) ")
 
-        lines= [
-            'GET %s HTTP/1.1' % path,
-            'Host: %s' % host,
-            'Authorization: Basic %s' % token,
-            'Connection: close',
-        ]
+        if test_API == 'y':
+            z = 1
+            response = 0
+            host = input(str("Qual o endereço do servidor que irá hospedar? "))
+            path= '/api'
+            username= input(str("Username "))
+            password= input(str("Password "))
+            print('quack')
+            try:
+                lines= [
+                'GET %s HTTP/1.1' % path,
+                'Host: %s' % host,
+                'Connection: close',
+                ]
+                s= socket.socket()
+                s.connect((host, 8080))
+                f= s.makefile('rwb', bufsize=0)
+                f.write('\r\n'.join(lines)+'\r\n\r\n')
+                f.close()
+                response= f.read()
+            except:
+                pass
 
-        s= socket.socket()
-        s.connect((host, 8080))
-        f= s.makefile('rwb', bufsize=0)
-        f.write('\r\n'.join(lines)+'\r\n\r\n')
-        response= f.read()
-        print(Fore.GREEN+"Conectado no servidor...")
-
-        while z == 1:
-            test = input("Deseja enviar o arquivo inteiro ou em páginas? i = inteiro / p = páginas ")
-            if test == 'i':
-                z = 2
-                fhand = codecs.open('numbers.json', 'w')
-                fhand.write(" \"`{ ")
-                fhand.write(str(lista_ordenada))
-                fhand.write(" }`\" ")
-                fhand.close()
-                print(Fore.YELLOW + "dados exportados para numbers.json")
-            if test == 'p':
-                for page in trange(count_page):
-                    pagina = lista_ordenada[((page-1)*100):(100*count_page)]
-                    fhand = codecs.open('numbers' + str(page)+ '.json', 'w')
+            if response > 0:
+                print(Fore.GREEN+"Conectado no servidor...")
+            else:
+                test_continuar = input(Fore.RED+"Falha na conexão com o servidor, deseja continuar? (y/n)...")
+                print(Fore.RESET)
+                if test_continuar == "y":
+                    pass
+                if test_continuar == "n":
+                    break
+                else:
+                    pass
+            while z == 1:
+                test_envio = input("Deseja enviar o arquivo inteiro ou em páginas? i = inteiro / p = páginas ")
+                if test_envio == 'i':
+                    z = 2
+                    fhand = codecs.open('numbers.json', 'w')
                     fhand.write(" \"`{ ")
                     fhand.write(str(lista_ordenada))
                     fhand.write(" }`\" ")
                     fhand.close()
-                    print(Fore.YELLOW + "dados exportados para 'numbers' + str(page)+ '.json'")
-                z = 2
-            else:
-                continue
-    if test == 'n':
-        break
-    else:
+                    print(Fore.YELLOW + "dados exportados para numbers.json")
+
+                if test_envio == 'p':
+                    for page in trange(count_page):
+                        pagina = lista_ordenada[(page*100):(100*count_page)]
+                        fhand = codecs.open('numbers' + str(page)+ '.json', 'w')
+                        fhand.write(" \"`{ ")
+                        fhand.write(str(pagina))
+                        fhand.write(" }`\" ")
+                        fhand.close()
+                        print(Fore.YELLOW + "dados exportados para numbers" + str(page)+ ".json")
+                    z = 2
+
+                else:
+                    continue
+
+        if test_API == 'n':
+            break
+
+        else:
+            continue
+    
+    except:
         continue
-
-
-
-
-
-
-
