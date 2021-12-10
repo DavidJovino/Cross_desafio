@@ -1,5 +1,5 @@
 import urllib.request, urllib.parse, urllib.error
-import socket, base64
+import socket
 import json
 import ssl
 import itertools
@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS api_numbers;
 conn.close()
 
 count_page = 0 
-for pages in itertools.count(9998):
+for pages in itertools.count(9996):
 
   serviceurl = "http://challenge.dienekes.com.br/api/numbers?page=" + str(pages)
 
@@ -57,10 +57,10 @@ for pages in itertools.count(9998):
   if len(data) <= 14: 
     break
   else:
-       # Extraindo os números   
+    # Extraindo os números   
     count_page += 1  
     array.append(js['numbers'])
-    #print(array)
+
     for rows in js:
         api_dict = {
         "numbers": js[rows],
@@ -122,6 +122,7 @@ def binary_sort(arr):
 
 lista_ordenada = binary_sort(lista)
 
+# Criando Json e enviando para o servidor
 z = 0
 while z == 0:
     try:
@@ -134,7 +135,6 @@ while z == 0:
             path= '/api'
             username= input(str("Username "))
             password= input(str("Password "))
-            print('quack')
             try:
                 lines= [
                 'GET %s HTTP/1.1' % path,
@@ -153,12 +153,15 @@ while z == 0:
             if response > 0:
                 print(Fore.GREEN+"Conectado no servidor...")
             else:
-                test_continuar = input(Fore.RED+"Falha na conexão com o servidor, deseja continuar? (y/n)...")
+                test_continuar = input(Fore.RED+"Falha na conexão com o servidor, deseja continuar o processo da API? (y/n) (r=tentar novamente)...")
                 print(Fore.RESET)
                 if test_continuar == "y":
                     pass
                 if test_continuar == "n":
                     break
+                if test_continuar == "r":
+                    z = 0
+                    pass
                 else:
                     pass
             while z == 1:
